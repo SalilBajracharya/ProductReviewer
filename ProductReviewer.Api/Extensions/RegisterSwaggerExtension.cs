@@ -19,8 +19,8 @@ namespace ProductReviewer.Api.Extensions
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
                     Name = "Authorization",
-                    In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
+                    In = ParameterLocation.Header,
                     Scheme = "Bearer"
                 });
 

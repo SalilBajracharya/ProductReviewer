@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProductReviewer.Application.Common.Interface;
+using ProductReviewer.Application.Segregation.Products.Queries;
 using ProductReviewer.Infrastructure.Data;
+using ProductReviewer.Infrastructure.Services;
 
 namespace ProductReviewer.Api.Extensions
 {
@@ -10,6 +13,12 @@ namespace ProductReviewer.Api.Extensions
             services.AddDbContext<ApplicationDbContext>(opt =>
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection"))
             );
+
+            services.AddMediatR(cfg =>
+                    cfg.RegisterServicesFromAssembly(typeof(GetAllProductsQuery).Assembly));
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
     }

@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProductReviewer.Application.Segregation.Auth.Queries;
 
 namespace ProductReviewer.Api.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController : BaseApiController
     {
-        public IActionResult Index()
+        [HttpPost]
+        public async Task<IActionResult> Authenticate(LoginRequestQuery query)
         {
-            return View();
+            var result = await Mediator.Send(query);
+            return Ok(result);
         }
     }
 }

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProductReviewer.Application.Products.Queries;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ProductReviewer.Application.Segregation.Products.Queries;
 
 namespace ProductReviewer.Api.Controllers
 {
     public class ProductController : BaseApiController
     {
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] GetAllProductsQuery query)
         {

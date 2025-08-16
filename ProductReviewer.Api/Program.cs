@@ -6,6 +6,7 @@ using ProductReviewer.Infrastructure.Data.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+RegisterAuthExtension.RegisterAuth(builder.Services, builder.Configuration);
 RegisterSwaggerExtension.RegisterSwagger(builder.Services);
 RegisterServicesExtension.RegisterServices(builder.Services, builder.Configuration);
 RegisterIdentityExtension.RegisterIdentity(builder.Services);
