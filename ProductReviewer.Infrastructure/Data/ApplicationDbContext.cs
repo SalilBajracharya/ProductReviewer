@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProductReviewer.Domain.Entities;
+using ProductReviewer.Infrastructure.Data.Configurations;
 using ProductReviewer.Infrastructure.Data.Identity;
 
 namespace ProductReviewer.Infrastructure.Data
@@ -27,6 +28,9 @@ namespace ProductReviewer.Infrastructure.Data
             builder.Entity<IdentityUserLogin<string>>().ToTable("PrUserLogin");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("PrRoleClaim");
             builder.Entity<IdentityUserToken<string>>().ToTable("PrUserToken");
+
+            builder.ApplyConfiguration(new ProductConfig());
+            builder.ApplyConfiguration(new ReviewConfig());
         }
     }
 }
