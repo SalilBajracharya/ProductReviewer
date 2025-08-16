@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MediaTr" Version="13.0.0" />
+    <PackageReference Include="MediaTr.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Segregation\Auth\Commands\" />
+    <Folder Include="Segregation\Products\Commands\" />
+  </ItemGroup>
+
 </Project>

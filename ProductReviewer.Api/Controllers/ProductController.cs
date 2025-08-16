@@ -6,7 +6,6 @@ namespace ProductReviewer.Api.Controllers
 {
     public class ProductController : BaseApiController
     {
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] GetAllProductsQuery query)
         {
