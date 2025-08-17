@@ -45,9 +45,9 @@ namespace ProductReviewer.Infrastructure.Services
             return "Product created successfully";
         }
 
-        public async Task<List<ProductDto>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<ProductDto>> GetAllAsync(ProductCategory? category = null)
         {
-            return await _ctx.Products
+            var query = _ctx.Products
                 .Select(p => new ProductDto
                 {
                     Id = p.Id,
@@ -60,7 +60,14 @@ namespace ProductReviewer.Infrastructure.Services
                         p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 4.0 ? ProductCategory.Good :
                         p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 2.0 ? ProductCategory.Bad :
                         ProductCategory.Worst
-                }).ToListAsync(cancellationToken);
+                });
+
+            if (category.HasValue)
+            {
+                query = query.Where(p => p.Category == category.Value);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

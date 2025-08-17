@@ -21,6 +21,7 @@ namespace ProductReviewer.Api.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddSingleton<ICsvGenerator, CsvGeneratorService>();
             return services;
         }
     }

@@ -33,5 +33,12 @@ namespace ProductReviewer.Api.Controllers
             var result = await Mediator.Send(command);
             return Ok(result);
         }
+
+        [HttpGet("products-report")]
+        public async Task<IActionResult> DownloadProductRatingsReport([FromQuery] GenerateProductReportQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return File(result, "text/csv", "ProductsRatingReport.csv");
+        }
     }
 }

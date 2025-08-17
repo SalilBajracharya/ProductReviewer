@@ -17,7 +17,7 @@ namespace ProductReviewer.Application.Segregation.Products.Queries
         }
         public async Task<List<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            return await _productService.GetAllAsync(cancellationToken);
+            return await _productService.GetAllAsync();
         }
     }
 }
