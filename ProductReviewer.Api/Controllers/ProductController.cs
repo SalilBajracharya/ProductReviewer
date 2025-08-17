@@ -18,6 +18,14 @@ namespace ProductReviewer.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct(CreateProductCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
         [Authorize(Policy = "AdminAndReviewer")]
         [HttpPost("create-review")]
         public async Task<IActionResult> ReviewProduct([FromBody] ReviewProductCommand command)

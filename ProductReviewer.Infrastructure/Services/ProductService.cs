@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using ProductReviewer.Application.Common.Dtos;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Domain.Entities;
@@ -17,7 +16,7 @@ namespace ProductReviewer.Infrastructure.Services
             _currentUser = currentUser;
         }
 
-        public async Task AddProductReview(ReviewProductDto reviewProductDto, CancellationToken cancellationToken)
+        public async Task AddProductReview(ReviewProductDto reviewProductDto)
         {
             var addReview = new Review
             {
@@ -27,8 +26,22 @@ namespace ProductReviewer.Infrastructure.Services
                 UserId = _currentUser.UserId!
             };
 
-            await _ctx.Reviews.AddAsync(addReview, cancellationToken);
-            await _ctx.SaveChangesAsync(cancellationToken);
+            await _ctx.Reviews.AddAsync(addReview);
+            await _ctx.SaveChangesAsync();
+        }
+
+        public async Task<bool> CheckUserReviewExists(int productId)
+        {
+            return await _ctx.Reviews.AnyAsync(
+                r => r.ProductId == productId && r.UserId == _currentUser.UserId);
+        }
+
+        public async Task<string> CreateProduct(Product product)
+        {
+            await _ctx.Products.AddAsync(product);
+            await _ctx.SaveChangesAsync();
+
+            return "Product created successfully";
         }
 
         public async Task<List<ProductDto>> GetAllAsync(CancellationToken cancellationToken)

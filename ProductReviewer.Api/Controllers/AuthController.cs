@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProductReviewer.Application.Segregation.Auth.Commands;
 using ProductReviewer.Application.Segregation.Auth.Queries;
 
@@ -22,6 +23,7 @@ namespace ProductReviewer.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRole(AssignRoleToUserCommand command)
         {

@@ -6,7 +6,7 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
 {
     public class ReviewProductCommand : IRequest<string>
     {
-        public int ProductInt { get; set; }
+        public int ProductId { get; set; }
         public double Rating { get; set; }
         public string? Comment { get; set; } = string.Empty;
     }
@@ -20,15 +20,22 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
         }
         public async Task<string> Handle(ReviewProductCommand request, CancellationToken cancellationToken)
         {
-           var reviewProductDto = new ReviewProductDto
-           {
-               ProductInt = request.ProductInt,
-               Rating = request.Rating,
-               Comment = request.Comment
-           };
+            var userProductReviewExists = await _productService.CheckUserReviewExists(request.ProductInt);
 
-            await _productService.AddProductReview(reviewProductDto, cancellationToken);
-           return "Review added successfully";
+            if (userProductReviewExists)
+            {
+                return "You have already reviewed this product";
+            }
+
+            var reviewProductDto = new ReviewProductDto
+            {
+                ProductInt = request.ProductInt,
+                Rating = request.Rating,
+                Comment = request.Comment
+            };
+
+            await _productService.AddProductReview(reviewProductDto);
+            return "Review added successfully";
         }
     }
 }
