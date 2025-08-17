@@ -20,7 +20,7 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
         }
         public async Task<string> Handle(ReviewProductCommand request, CancellationToken cancellationToken)
         {
-            var userProductReviewExists = await _productService.CheckUserReviewExists(request.ProductInt);
+            var userProductReviewExists = await _productService.CheckUserReviewExists(request.ProductId);
 
             if (userProductReviewExists)
             {
@@ -29,7 +29,7 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
 
             var reviewProductDto = new ReviewProductDto
             {
-                ProductInt = request.ProductInt,
+                ProductInt = request.ProductId,
                 Rating = request.Rating,
                 Comment = request.Comment
             };
