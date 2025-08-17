@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProductReviewer.Api.Extensions;
+using ProductReviewer.Application;
 using ProductReviewer.Infrastructure.Data;
 using ProductReviewer.Infrastructure.Data.Identity;
 
@@ -11,6 +12,7 @@ RegisterIdentityExtension.RegisterIdentity(builder.Services);
 RegisterAuthExtension.RegisterAuth(builder.Services, builder.Configuration);
 RegisterSwaggerExtension.RegisterSwagger(builder.Services);
 RegisterServicesExtension.RegisterServices(builder.Services, builder.Configuration);
+RegisterApplicationServices.RegisterServices(builder.Services); //Application layer services
 
 var app = builder.Build();
 
