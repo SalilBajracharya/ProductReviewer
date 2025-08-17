@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ProductReviewer.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     public class BaseApiController : ControllerBase
     {
         private IMediator? _mediator;

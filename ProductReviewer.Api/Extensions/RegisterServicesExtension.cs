@@ -16,6 +16,8 @@ namespace ProductReviewer.Api.Extensions
 
             services.AddMediatR(cfg =>
                     cfg.RegisterServicesFromAssembly(typeof(GetAllProductsQuery).Assembly));
+
+            services.AddScoped<ICurrentUser, CurrentUserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();

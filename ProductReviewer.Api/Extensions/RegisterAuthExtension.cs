@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace ProductReviewer.Api.Extensions
 {
@@ -12,6 +12,7 @@ namespace ProductReviewer.Api.Extensions
             { 
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -21,20 +22,21 @@ namespace ProductReviewer.Api.Extensions
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
-                    ValidIssuer = config["Jwt:Issuer"], 
-                    ValidAudience = config["Jwt:Audience"], 
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(config["Jwt:Key"]!)) 
+                    ValidIssuer = config["Jwt:Issuer"],
+                    ValidAudience = config["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+                    RoleClaimType = ClaimTypes.Role
                 };
             });
 
             services.AddAuthorization(options =>
             {
-                var policy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .Build();
-
-                options.DefaultPolicy = policy;
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+                options.AddPolicy("ReviewerOnly", policy => policy.RequireRole("Reviewer"));
+                options.AddPolicy("AdminAndReviewer", policy => policy.RequireRole("Admin", "Reviewer"));
             });
+
             return services;
         }
     }

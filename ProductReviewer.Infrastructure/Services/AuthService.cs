@@ -30,7 +30,7 @@ namespace ProductReviewer.Infrastructure.Services
             if (!result.Succeeded)
                 return "Incorrect Password";
 
-            return _tokenService.Generate(user.Id, username);
+            return await _tokenService.Generate(user.Id, username);
         }
     }
 }

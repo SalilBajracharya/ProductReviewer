@@ -3,6 +3,8 @@ using ProductReviewer.Application.Segregation.Auth.Queries;
 
 namespace ProductReviewer.Api.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : BaseApiController
     {
         [HttpPost]

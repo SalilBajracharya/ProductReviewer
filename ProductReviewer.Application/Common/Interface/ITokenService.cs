@@ -2,6 +2,6 @@
 {
     public interface ITokenService
     {
-        string Generate(string userId, string userName);
+        Task<string> Generate(string userId, string userName);
     }
 }

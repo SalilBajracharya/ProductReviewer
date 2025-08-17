@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Segregation\Auth\Commands\" />
-    <Folder Include="Segregation\Products\Commands\" />
   </ItemGroup>
 
 </Project>

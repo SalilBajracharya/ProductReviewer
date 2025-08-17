@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ProductReviewer.Api.Extensions;
 using ProductReviewer.Infrastructure.Data;
 using ProductReviewer.Infrastructure.Data.Identity;
@@ -6,10 +7,10 @@ using ProductReviewer.Infrastructure.Data.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+RegisterIdentityExtension.RegisterIdentity(builder.Services);
 RegisterAuthExtension.RegisterAuth(builder.Services, builder.Configuration);
 RegisterSwaggerExtension.RegisterSwagger(builder.Services);
 RegisterServicesExtension.RegisterServices(builder.Services, builder.Configuration);
-RegisterIdentityExtension.RegisterIdentity(builder.Services);
 
 var app = builder.Build();
 
@@ -21,18 +22,22 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var db = services.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-    await DbInitializer.SeedAsync(db, userManager);
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    await DbInitializer.SeedAsync(db, userManager, roleManager);
 }
+
 
 await app.RunAsync();
