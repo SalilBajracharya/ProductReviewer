@@ -2,6 +2,7 @@
 using ProductReviewer.Application.Common.Dtos;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Domain.Entities;
+using ProductReviewer.Domain.Enums;
 using ProductReviewer.Infrastructure.Data;
 
 namespace ProductReviewer.Infrastructure.Services
@@ -47,7 +48,6 @@ namespace ProductReviewer.Infrastructure.Services
         public async Task<List<ProductDto>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _ctx.Products
-                .Include(p => p.Reviews)
                 .Select(p => new ProductDto
                 {
                     Id = p.Id,
@@ -56,7 +56,10 @@ namespace ProductReviewer.Infrastructure.Services
                     SKU = p.SKU,
                     ProductType = p.ProductType,
                     AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0.0,
-                    Category = p.Reviews.Average(r => r.Rating) > 4.0 ? "High" : p.Reviews.Average(r => r.Rating) > 2.0 ? "Medium" : "Low"
+                    Category =
+                        p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 4.0 ? ProductCategory.Good :
+                        p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 2.0 ? ProductCategory.Bad :
+                        ProductCategory.Worst
                 }).ToListAsync(cancellationToken);
         }
     }

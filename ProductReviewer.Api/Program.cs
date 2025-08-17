@@ -4,14 +4,19 @@ using ProductReviewer.Api.Extensions;
 using ProductReviewer.Application;
 using ProductReviewer.Infrastructure.Data;
 using ProductReviewer.Infrastructure.Data.Identity;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opt => {
+        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 RegisterIdentityExtension.RegisterIdentity(builder.Services);
 RegisterAuthExtension.RegisterAuth(builder.Services, builder.Configuration);
 RegisterSwaggerExtension.RegisterSwagger(builder.Services);
 RegisterServicesExtension.RegisterServices(builder.Services, builder.Configuration);
+
 RegisterApplicationServices.RegisterServices(builder.Services); //Application layer services
 
 var app = builder.Build();

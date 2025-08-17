@@ -1,4 +1,6 @@
-﻿namespace ProductReviewer.Application.Common.Dtos
+﻿using ProductReviewer.Domain.Enums;
+
+namespace ProductReviewer.Application.Common.Dtos
 {
     public class ProductDto
     {
@@ -7,7 +9,8 @@
         public string? Description { get; set; }
         public string? SKU { get; set; }
         public string? ProductType { get; set; }
+        public int TotalReviews { get; set; }
         public double AverageRating { get; set; }
-        public string Category { get; set; } = null!;
+        public ProductCategory Category { get; set; }
     }
 }

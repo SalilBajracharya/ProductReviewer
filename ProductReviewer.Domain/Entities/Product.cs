@@ -11,10 +11,5 @@ namespace ProductReviewer.Domain.Entities
         public string? SKU { get; set; }
 
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public double AverageRating => Reviews.Any() ? Reviews.Average(r => r.Rating) : 0.0;
-        public ProductCategory Category =>
-            AverageRating >= 4.0 ? ProductCategory.Good :
-            AverageRating >= 2.0 ? ProductCategory.Bad :
-            ProductCategory.Worst;
     }
 }
