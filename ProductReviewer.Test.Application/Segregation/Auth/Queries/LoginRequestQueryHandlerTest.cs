@@ -40,22 +40,46 @@ namespace ProductReviewer.Test.Application.Segregation.Auth.Queries
 
         [Trait("Category", "LoginRequestHandler")]
         [Fact]
-        public async Task Handle_CallsAuthServiceLoginValidate_ReturnsFailureResult()
+        public async Task Handle_LoginValidateWithInvalidUser_ReturnsFailureResult()
         {
             var query = new LoginRequestQuery
             {
-                Username = "testuser",
-                Password = "wrongpassword"
+                Username = "nonexistentuser",
+                Password = "Strong@123"
             };
 
-            var failure = Result.Fail<string>("Invalid credentials");
+            var failure = Result.Fail<string>("Username does not exist");
             _authServiceMock.Setup(x => x.LoginValidate(query.Username, query.Password))
                 .ReturnsAsync(failure);
 
             var result = await _handler.Handle(query, CancellationToken.None);
 
             Assert.True(result.IsFailed);
-            Assert.Contains(result.Errors, e => e.Message == "Invalid credentials"); 
+            Assert.Contains("Username does not exist", result.Errors[0].Message); 
+
+            _authServiceMock.Verify(x => x.LoginValidate(query.Username, query.Password), Times.Once);
+        }
+
+        [Trait("Category", "LoginRequestHandler")]
+        [Fact]
+        public async Task Handle_LoginValidateWithInvalidPassword_ReturnsFailureResult()
+        {
+            var query = new LoginRequestQuery
+            {
+                Username = "newuser1",
+                Password = "wrongpassword"
+            };
+
+            var failure = Result.Fail<string>("Incorrect Password");
+            _authServiceMock.Setup(x => x.LoginValidate(query.Username, query.Password))
+                .ReturnsAsync(failure);
+
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.True(result.IsFailed);
+            Assert.Contains("Incorrect Password", result.Errors[0].Message);
+
+            _authServiceMock.Verify(x => x.LoginValidate(query.Username, query.Password), Times.Once);
         }
     }
 }

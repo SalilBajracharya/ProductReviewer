@@ -17,7 +17,7 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Commands
             _handler = new ReviewProductCommandHandler(_productService.Object);
         }
 
-        [Trait("Category", "ProductCommandHandler")]
+        [Trait("Category", "ProductHandlers")]
         [Fact]
         public async Task Handle_CallReviewProduct_ReturnsSuccess()
         {
@@ -42,13 +42,13 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Commands
 
             _productService.Verify(x => x.CheckUserReviewExists(command.ProductId), Times.Once);
             _productService.Verify(x => x.AddProductReview(It.Is<ReviewProductDto>(r =>
-                r.ProductInt == command.ProductId &&
+                r.ProductId == command.ProductId &&
                 r.Rating == command.Rating &&
                 r.Comment == command.Comment)), Times.Once);
         }
 
 
-        [Trait("Category", "ProductCommandHandler")]
+        [Trait("Category", "ProductHandlers")]
         [Fact]
         public async Task Handle_WhenUserHasReviewed_ReturnsFailure()
         {

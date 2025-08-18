@@ -1,12 +1,15 @@
 ﻿using FluentResults;
 using MediatR;
 using ProductReviewer.Application.Common.Interface;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductReviewer.Application.Segregation.Auth.Queries
 {
     public record LoginRequestQuery : IRequest<Result<string>>
     {
+        [Required]
         public string Username { get; set; } = string.Empty;
+        [Required]
         public string Password { get; set; } = string.Empty;
     }
 

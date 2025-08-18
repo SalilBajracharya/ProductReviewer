@@ -22,7 +22,7 @@ namespace ProductReviewer.Infrastructure.Services
         {
             var addReview = new Review
             {
-                ProductId = reviewProductDto.ProductInt,
+                ProductId = reviewProductDto.ProductId,
                 Rating = reviewProductDto.Rating,
                 Comment = reviewProductDto.Comment ?? string.Empty,
                 UserId = _currentUser.UserId!
@@ -33,6 +33,7 @@ namespace ProductReviewer.Infrastructure.Services
 
             return Result.Ok("Added Review Successfully.");
         }
+
 
         public async Task<Result<bool>> CheckUserReviewExists(int productId)
         {

@@ -18,7 +18,7 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
             _handler = new GetAllProductQueryHandler(_productService.Object);
         }
 
-        [Trait("Category", "ProductCommandHandler")]
+        [Trait("Category", "ProductHandlers")]
         [Fact]
         public async Task Handle_GetsAllProduct_ReturnsSuccess()
         {
@@ -43,7 +43,7 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
             _productService.Verify(s => s.GetAllAsync(null), Times.Once);
         }
 
-        [Trait("Category", "ProductCommandHandler")]
+        [Trait("Category", "ProductHandlers")]
         [Fact]
         public async Task Handle_WhenServiceFails_ReturnsFailure()
         { 

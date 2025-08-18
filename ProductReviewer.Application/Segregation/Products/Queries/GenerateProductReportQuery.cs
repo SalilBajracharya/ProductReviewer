@@ -24,7 +24,6 @@ namespace ProductReviewer.Application.Segregation.Products.Queries
             var products = await _productService.GetAllAsync(request.Category);
             var csv = _csvGenerator.Export(products.Value);
             return Encoding.UTF8.GetBytes(csv);
-
         }
     }
 }

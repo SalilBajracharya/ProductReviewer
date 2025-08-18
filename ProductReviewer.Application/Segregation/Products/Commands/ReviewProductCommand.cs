@@ -30,7 +30,7 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
 
             var reviewProductDto = new ReviewProductDto
             {
-                ProductInt = request.ProductId,
+                ProductId = request.ProductId,
                 Rating = request.Rating,
                 Comment = request.Comment
             };

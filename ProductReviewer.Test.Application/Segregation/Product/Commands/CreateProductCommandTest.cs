@@ -17,7 +17,7 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Commands
             _handler = new CreateProductCommandHandler(_productServiceMock.Object);
         }
 
-        [Trait("Category", "ProductCommandHandler")]
+        [Trait("Category", "ProductHandlers")]
         [Fact]
         public async Task Handle_CallCreateProduct_ReturnsSuccess()
         { 
@@ -45,7 +45,7 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Commands
                 p.ProductType == command.ProductType)), Times.Once);
         }
 
-        [Trait("Category", "ProductCommandHandler")]
+        [Trait("Category", "ProductHandlers")]
         [Fact]
         public async Task Handle_CreateProductWithDuplicateSKU_ReturnsFailure()
         {
