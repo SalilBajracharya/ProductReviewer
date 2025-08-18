@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using ProductReviewer.Application.Common.Dtos;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Domain.Entities;
@@ -17,7 +18,7 @@ namespace ProductReviewer.Infrastructure.Services
             _currentUser = currentUser;
         }
 
-        public async Task AddProductReview(ReviewProductDto reviewProductDto)
+        public async Task<Result<string>> AddProductReview(ReviewProductDto reviewProductDto)
         {
             var addReview = new Review
             {
@@ -29,23 +30,27 @@ namespace ProductReviewer.Infrastructure.Services
 
             await _ctx.Reviews.AddAsync(addReview);
             await _ctx.SaveChangesAsync();
+
+            return Result.Ok("Added Review Successfully.");
         }
 
-        public async Task<bool> CheckUserReviewExists(int productId)
+        public async Task<Result<bool>> CheckUserReviewExists(int productId)
         {
-            return await _ctx.Reviews.AnyAsync(
+            var result = await _ctx.Reviews.AnyAsync(
                 r => r.ProductId == productId && r.UserId == _currentUser.UserId);
+
+            return Result.Ok(result);
         }
 
-        public async Task<string> CreateProduct(Product product)
+        public async Task<Result<string>> CreateProduct(Product product)
         {
             await _ctx.Products.AddAsync(product);
             await _ctx.SaveChangesAsync();
 
-            return "Product created successfully";
+            return Result.Ok("Added Product successfully.");
         }
 
-        public async Task<List<ProductDto>> GetAllAsync(ProductCategory? category = null)
+        public async Task<Result<List<ProductDto>>> GetAllAsync(ProductCategory? category = null)
         {
             var query = _ctx.Products
                 .Select(p => new ProductDto
@@ -67,7 +72,7 @@ namespace ProductReviewer.Infrastructure.Services
                 query = query.Where(p => p.Category == category.Value);
             }
 
-            return await query.ToListAsync();
+            return Result.Ok(await query.ToListAsync());
         }
     }
 }

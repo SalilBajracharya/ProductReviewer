@@ -22,7 +22,7 @@ namespace ProductReviewer.Application.Segregation.Products.Queries
         public async Task<byte[]> Handle(GenerateProductReportQuery request, CancellationToken cancellationToken)
         {
             var products = await _productService.GetAllAsync(request.Category);
-            var csv = _csvGenerator.Export(products);
+            var csv = _csvGenerator.Export(products.Value);
             return Encoding.UTF8.GetBytes(csv);
 
         }

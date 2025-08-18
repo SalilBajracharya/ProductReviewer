@@ -1,30 +1,31 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ProductReviewer.Application.Common.Dtos;
 using ProductReviewer.Application.Common.Interface;
 
 namespace ProductReviewer.Application.Segregation.Products.Commands
 {
-    public class ReviewProductCommand : IRequest<string>
+    public class ReviewProductCommand : IRequest<Result<string>>
     {
         public int ProductId { get; set; }
         public double Rating { get; set; }
         public string? Comment { get; set; } = string.Empty;
     }
 
-    public class ReviewProductCommandHandler : IRequestHandler<ReviewProductCommand, string>
+    public class ReviewProductCommandHandler : IRequestHandler<ReviewProductCommand, Result<string>>
     {
         private readonly IProductService _productService;
         public ReviewProductCommandHandler(IProductService productService)
         {
             _productService = productService;
         }
-        public async Task<string> Handle(ReviewProductCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(ReviewProductCommand request, CancellationToken cancellationToken)
         {
             var userProductReviewExists = await _productService.CheckUserReviewExists(request.ProductId);
 
-            if (userProductReviewExists)
+            if (userProductReviewExists.Value)
             {
-                return "You have already reviewed this product";
+                return Result.Fail("You have already reviewed this product");
             }
 
             var reviewProductDto = new ReviewProductDto
@@ -35,7 +36,7 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
             };
 
             await _productService.AddProductReview(reviewProductDto);
-            return "Review added successfully";
+            return Result.Ok("Review added successfully");
         }
     }
 }

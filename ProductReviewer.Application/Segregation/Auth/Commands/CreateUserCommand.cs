@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ProductReviewer.Application.Common.Dtos;
 using ProductReviewer.Application.Common.Interface;
 
 namespace ProductReviewer.Application.Segregation.Auth.Commands
 {
-    public record CreateUserCommand : IRequest<string>
+    public record CreateUserCommand : IRequest<Result<string>>
     {
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -12,14 +13,14 @@ namespace ProductReviewer.Application.Segregation.Auth.Commands
         public string DisplayName { get; set; } = string.Empty;
     }
 
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, string>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<string>>
     {
         private readonly IAuthService _authService;
         public CreateUserCommandHandler(IAuthService authService)
         {
             _authService = authService;
         }
-        public async Task<string> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var dto = new UserDto
             {
@@ -29,8 +30,7 @@ namespace ProductReviewer.Application.Segregation.Auth.Commands
                 DisplayName = request.DisplayName
             };
 
-            var result = await _authService.CreateUser(dto);
-            return result;
+            return await _authService.CreateUser(dto); 
         }
     }
 }

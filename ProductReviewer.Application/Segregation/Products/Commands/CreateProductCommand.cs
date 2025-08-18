@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Domain.Entities;
 
 namespace ProductReviewer.Application.Segregation.Products.Commands
 {
-    public class CreateProductCommand : IRequest<string>
+    public class CreateProductCommand : IRequest<Result<string>>
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -12,14 +13,14 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
         public string ProductType { get; set; } = string.Empty;
     }
 
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, string>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<string>>
     {
         private readonly IProductService _productService;
         public CreateProductCommandHandler(IProductService productService)
         {
             _productService = productService;
         }
-        public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var product = new Product
             {

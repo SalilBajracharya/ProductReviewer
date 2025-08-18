@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentResults.Extensions.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductReviewer.Application.Segregation.Products.Commands;
@@ -15,7 +16,7 @@ namespace ProductReviewer.Api.Controllers
         public async Task<IActionResult> GetAll([FromQuery] GetAllProductsQuery query)
         {
             var result = await Mediator.Send(query);
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [Authorize]
@@ -23,7 +24,7 @@ namespace ProductReviewer.Api.Controllers
         public async Task<IActionResult> CreateProduct(CreateProductCommand command)
         {
             var result = await Mediator.Send(command);
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [Authorize(Policy = "AdminAndReviewer")]
@@ -31,7 +32,7 @@ namespace ProductReviewer.Api.Controllers
         public async Task<IActionResult> ReviewProduct([FromBody] ReviewProductCommand command)
         {
             var result = await Mediator.Send(command);
-            return Ok(result);
+            return result.ToActionResult();
         }
 
         [HttpGet("products-report")]

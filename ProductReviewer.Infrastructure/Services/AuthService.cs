@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Identity;
 using ProductReviewer.Application.Common.Dtos;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Infrastructure.Data.Identity;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProductReviewer.Infrastructure.Services
 {
@@ -24,37 +26,37 @@ namespace ProductReviewer.Infrastructure.Services
             _tokenService = tokenService;
         }
 
-        public async Task<string> AssignRole(string userId, string roleName)
+        public async Task<Result<string>> AssignRole(string userId, string roleName)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
-                return "User does not exist";
+                return Result.Fail("User does not exist");
 
             var roleExists = await _roleManager.RoleExistsAsync(roleName);
 
             if (!roleExists)
-                return "Role does not exist";
+                return Result.Fail("Role does not exist");
 
             var result = await _userManager.AddToRoleAsync(user, roleName);
 
             if (!result.Succeeded)
-                return result.Errors.Select(e => e.Description).FirstOrDefault()!;
+                return Result.Fail(result.Errors.Select(e => e.Description));
 
-            return "Role assigned successfully";
+            return Result.Ok("Role assigned successfully");
         }
 
-        public async Task<string> CreateUser(UserDto request)
+        public async Task<Result<string>> CreateUser(UserDto request)
         {
             var userByUsername = await _userManager.FindByNameAsync(request.Username);
 
             if(userByUsername != null)
-                return "Username already exists";
+                return Result.Fail("Username already exists");
 
             var userByEmail = await _userManager.FindByEmailAsync(request.Email);
 
             if(userByEmail != null)
-                return "Email already exists";
+                return Result.Fail("Email already exists");
 
             var newUser = new ApplicationUser
             {
@@ -66,27 +68,27 @@ namespace ProductReviewer.Infrastructure.Services
 
             var result = await _userManager.CreateAsync(newUser, request.Password);
             if (!result.Succeeded)
-                return result.Errors.Select(e => e.Description).FirstOrDefault()!;
+                return Result.Fail(result.Errors.Select(e => e.Description));
 
             var roleResult = await _userManager.AddToRoleAsync(newUser, "User");
             if (!roleResult.Succeeded)
-                return result.Errors.Select(e => e.Description).FirstOrDefault()!;
+                return Result.Fail(result.Errors.Select(e => e.Description));
 
-            return "Successfully added new user";
+            return Result.Ok("Successfully added new user");
         }
 
-        public async Task<string> LoginValidate(string username, string password)
+        public async Task<Result<string>> LoginValidate(string username, string password)
         {
             var user = await _userManager.FindByNameAsync(username);
 
             if (user == null)
-                return "Username does not exist";
+                return Result.Fail("Username does not exist");
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
 
             if (!result.Succeeded)
-                return "Incorrect Password";
+                return Result.Fail("Incorrect Password");
 
-            return await _tokenService.Generate(user.Id, username);
+            return Result.Ok(await _tokenService.Generate(user.Id, username));
         }
     }
 }
