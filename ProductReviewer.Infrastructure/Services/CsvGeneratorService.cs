@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using ProductReviewer.Application.Common.Interface;
+﻿using ProductReviewer.Application.Common.Interface;
 using System.Reflection;
 using System.Text;
 
