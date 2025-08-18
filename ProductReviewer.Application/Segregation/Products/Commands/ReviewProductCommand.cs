@@ -36,6 +36,7 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
             };
 
             await _productService.AddProductReview(reviewProductDto);
+
             return Result.Ok("Review added successfully");
         }
     }

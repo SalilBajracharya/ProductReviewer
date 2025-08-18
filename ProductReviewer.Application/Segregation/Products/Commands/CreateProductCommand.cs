@@ -1,13 +1,17 @@
 ﻿using FluentResults;
 using MediatR;
+using ProductReviewer.Application.Common.Dtos;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductReviewer.Application.Segregation.Products.Commands
 {
     public class CreateProductCommand : IRequest<Result<string>>
     {
+        [Required]
         public string Name { get; set; } = string.Empty;
+        [Required]
         public string Description { get; set; } = string.Empty;
         public string SKU { get; set; } = string.Empty;
         public string ProductType { get; set; } = string.Empty;
@@ -22,7 +26,7 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
         }
         public async Task<Result<string>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var product = new Product
+            var product = new CreateProductDto
             {
                 Name = request.Name,
                 Description = request.Description,

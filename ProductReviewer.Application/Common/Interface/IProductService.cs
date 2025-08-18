@@ -7,7 +7,7 @@ namespace ProductReviewer.Application.Common.Interface
 {
     public interface IProductService
     {
-        Task<Result<string>> CreateProduct(Product product);
+        Task<Result<string>> CreateProduct(CreateProductDto product);
         Task<Result<List<ProductDto>>> GetAllAsync(ProductCategory? category = null);
         Task<Result<bool>> CheckUserReviewExists(int productId);
         Task<Result<string>> AddProductReview(ReviewProductDto reviewProductDto);

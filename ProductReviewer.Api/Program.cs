@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProductReviewer.Api.Extensions;
+using ProductReviewer.Api.Middleware;
 using ProductReviewer.Application;
 using ProductReviewer.Infrastructure.Data;
 using ProductReviewer.Infrastructure.Data.Identity;
@@ -12,6 +13,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(opt => {
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
 RegisterIdentityExtension.RegisterIdentity(builder.Services);
 RegisterAuthExtension.RegisterAuth(builder.Services, builder.Configuration);
 RegisterSwaggerExtension.RegisterSwagger(builder.Services);
@@ -29,6 +31,8 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

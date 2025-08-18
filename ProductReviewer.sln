@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35728.132 d17.12
+VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductReviewer.Api", "ProductReviewer.Api\ProductReviewer.Api.csproj", "{62ACEA1A-7A20-415B-B3CB-0586C1E31431}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductReviewer.Infrastructure", "ProductReviewer.Infrastructure\ProductReviewer.Infrastructure.csproj", "{0365A1D2-000E-4815-BD78-F6C5CA212EBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductReviewer.Domain", "ProductReviewer.Domain\ProductReviewer.Domain.csproj", "{0CCEBD99-3F89-4909-9325-21808492FD2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductReviewer.Test.Application", "ProductReviewer.Test.Application\ProductReviewer.Test.Application.csproj", "{869327CE-33C6-44CC-83CF-384C52D408D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0CCEBD99-3F89-4909-9325-21808492FD2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CCEBD99-3F89-4909-9325-21808492FD2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CCEBD99-3F89-4909-9325-21808492FD2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{869327CE-33C6-44CC-83CF-384C52D408D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{869327CE-33C6-44CC-83CF-384C52D408D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{869327CE-33C6-44CC-83CF-384C52D408D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{869327CE-33C6-44CC-83CF-384C52D408D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

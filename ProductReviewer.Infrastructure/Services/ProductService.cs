@@ -42,8 +42,16 @@ namespace ProductReviewer.Infrastructure.Services
             return Result.Ok(result);
         }
 
-        public async Task<Result<string>> CreateProduct(Product product)
+        public async Task<Result<string>> CreateProduct(CreateProductDto productdto)
         {
+            var product = new Product
+            {
+                Name = productdto.Name,
+                Description = productdto.Description,
+                SKU = productdto.SKU,
+                ProductType = productdto.ProductType
+            };
+
             await _ctx.Products.AddAsync(product);
             await _ctx.SaveChangesAsync();
 
