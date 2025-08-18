@@ -35,6 +35,7 @@ namespace ProductReviewer.Api.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [HttpGet("products-report")]
         public async Task<IActionResult> DownloadProductRatingsReport([FromQuery] GenerateProductReportQuery query)
         {
