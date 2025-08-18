@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using Moq;
 using ProductReviewer.Application.Common.Dtos;
+using ProductReviewer.Application.Common.Helper;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Application.Segregation.Products.Queries;
 using ProductReviewer.Domain.Enums;
@@ -27,9 +28,11 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
                 new ProductDto { Id = 2, Name = "Shoes", AverageRating = 2.0, Category = ProductCategory.Bad }
             };
 
-            var expectedResult = Result.Ok(expectedProducts);
+            var paginatedResult = new PaginatedList<ProductDto>(expectedProducts, expectedProducts.Count, 1, 10);
 
-            _productService.Setup(x => x.GetAllAsync(null))
+            var expectedResult = Result.Ok(paginatedResult);
+
+            _productService.Setup(x => x.GetAllAsync(1, 10, null))
                 .ReturnsAsync(expectedResult);
 
             var query = new GetAllProductsQuery();
@@ -37,10 +40,10 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
             var result = await _handler.Handle(query, CancellationToken.None);
 
             Assert.True(result.IsSuccess);
-            Assert.Equal(expectedResult.Value.Count, result.Value.Count);
-            Assert.Equal(expectedResult.Value[0].Name, result.Value[0].Name);
+            Assert.Equal(paginatedResult.Items.Count, result.Value.Items.Count);
+            Assert.Equal(paginatedResult.Items[0].Name, result.Value.Items[0].Name);
 
-            _productService.Verify(s => s.GetAllAsync(null), Times.Once);
+            _productService.Verify(s => s.GetAllAsync(1, 10, null), Times.Once);
         }
 
         [Trait("Category", "ProductHandlers")]
@@ -49,7 +52,7 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
         { 
             var expectedResult = Result.Fail("Failed to fetch products");
 
-            _productService.Setup(x => x.GetAllAsync(null))
+            _productService.Setup(x => x.GetAllAsync(1, 10, null))
                 .ReturnsAsync(expectedResult);
 
             var query = new GetAllProductsQuery();
@@ -59,7 +62,7 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
             Assert.False(result.IsSuccess);
             Assert.Equal("Failed to fetch products", result.Errors[0].Message);
 
-            _productService.Verify(s => s.GetAllAsync(null), Times.Once);
+            _productService.Verify(s => s.GetAllAsync(1, 10, null), Times.Once);
         }
     }
 }

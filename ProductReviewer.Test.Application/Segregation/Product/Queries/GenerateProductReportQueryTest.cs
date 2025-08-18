@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using Moq;
 using ProductReviewer.Application.Common.Dtos;
+using ProductReviewer.Application.Common.Helper;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Application.Segregation.Products.Queries;
 using ProductReviewer.Domain.Enums;
@@ -51,14 +52,16 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
                 }
             };
 
+            var paginated = new PaginatedList<ProductDto>(products, products.Count, 1, 10);
+
             var csvString = "Id,Name,Description,SKU,ProductType,TotalReviews,AverageRating,Category" +
                             "1,Product A,A test product,SKU001,Electronics,10,4.5,Good" +
                             "2,Product B,Another product,SKU002,Books,5,3,Bad";
 
             var expectedBytes = Encoding.UTF8.GetBytes(csvString);
 
-            _productService.Setup(s => s.GetAllAsync(null))
-                 .ReturnsAsync(Result.Ok(products));
+            _productService.Setup(s => s.GetAllAsync(1, 10, null))
+                 .ReturnsAsync(Result.Ok(paginated));
 
             _csvGenerator.Setup(g => g.Export(products))
                 .Returns(csvString);
@@ -67,9 +70,8 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
             var result = await _handler.Handle(query, CancellationToken.None);
 
             Assert.Equal(expectedBytes, result);
-            _productService.Verify(s => s.GetAllAsync(null), Times.Once);
-            _csvGenerator.Verify(g => g.Export(products), Times.Once);
-
+            _productService.Verify(s => s.GetAllAsync(1, 10, null), Times.Once);
+            _csvGenerator.Verify(g => g.Export(paginated.Items), Times.Once);
         }
 
         [Trait("Category", "ProductHandlers")]
@@ -79,8 +81,10 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
             var emptyList = new List<ProductDto>();
             const string expectedHeader = "Id, Name, Description, SKU, ProductType, TotalReviews, AverageRating, Category";
 
-            _productService.Setup(x => x.GetAllAsync(null))
-                .ReturnsAsync(Result.Ok(emptyList));
+            var paginated = new PaginatedList<ProductDto>(emptyList, 0, 1, 10);
+
+            _productService.Setup(x => x.GetAllAsync(1, 10, null))
+                .ReturnsAsync(Result.Ok(paginated));
 
             _csvGenerator.Setup(x => x.Export(emptyList))
                 .Returns(expectedHeader);
@@ -91,8 +95,8 @@ namespace ProductReviewer.Test.Application.Segregation.Product.Queries
             var resultString = Encoding.UTF8.GetString(result);
             Assert.Contains(expectedHeader, resultString);
 
-            _productService.Verify(x => x.GetAllAsync(null), Times.Once);
-            _csvGenerator.Verify(x => x.Export(emptyList), Times.Once);
+            _productService.Verify(x => x.GetAllAsync(1, 10, null), Times.Once);
+            _csvGenerator.Verify(x => x.Export(paginated.Items), Times.Once);
         }
     }
 }

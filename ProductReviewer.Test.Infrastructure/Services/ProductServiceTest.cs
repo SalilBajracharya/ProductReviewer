@@ -131,12 +131,12 @@ namespace ProductReviewer.Test.Infrastructure.Services
 
             await _dbContext.SaveChangesAsync();
 
-            var result = await _productService.GetAllAsync(ProductCategory.Worst);
+            var result = await _productService.GetAllAsync(1, 10, ProductCategory.Worst);
 
             result.IsSuccess.Should().BeTrue();
-            result.Value.Should().ContainSingle();
+            result.Value.Items.Should().ContainSingle();
 
-            var product = result.Value.First();
+            var product = result.Value.Items.First();
             product.AverageRating.Should().BeLessThan(2.0);
             product.Category.Should().Be(ProductCategory.Worst);
         }
@@ -173,12 +173,12 @@ namespace ProductReviewer.Test.Infrastructure.Services
 
             await _dbContext.SaveChangesAsync();
 
-            var result = await _productService.GetAllAsync(ProductCategory.Bad);
+            var result = await _productService.GetAllAsync(1, 10, ProductCategory.Bad);
 
             result.IsSuccess.Should().BeTrue();
-            result.Value.Should().ContainSingle();
+            result.Value.Items.Should().ContainSingle();
 
-            var product = result.Value.First();
+            var product = result.Value.Items.First();
             product.AverageRating.Should().BeGreaterThanOrEqualTo(2.0).And.BeLessThan(4.0);
             product.Category.Should().Be(ProductCategory.Bad);
         }
@@ -216,12 +216,12 @@ namespace ProductReviewer.Test.Infrastructure.Services
 
             await _dbContext.SaveChangesAsync();
 
-            var result = await _productService.GetAllAsync(ProductCategory.Good);
+            var result = await _productService.GetAllAsync(1, 10, ProductCategory.Good);
 
             result.IsSuccess.Should().BeTrue();
-            result.Value.Should().ContainSingle();
+            result.Value.Items.Should().ContainSingle();
 
-            var product = result.Value.First();
+            var product = result.Value.Items.First();
             product.AverageRating.Should().BeGreaterThanOrEqualTo(4.0);
             product.Category.Should().Be(ProductCategory.Good);
         }
@@ -272,10 +272,10 @@ namespace ProductReviewer.Test.Infrastructure.Services
 
             await _dbContext.SaveChangesAsync();
 
-            var result = await _productService.GetAllAsync();
+            var result = await _productService.GetAllAsync(1, 10);
 
             result.IsSuccess.Should().BeTrue();
-            result.Value.Should().HaveCount(3);
+            result.Value.Items.Should().HaveCount(3);
         }
 
         public void Dispose()

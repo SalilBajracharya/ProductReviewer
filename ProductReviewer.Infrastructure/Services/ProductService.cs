@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using ProductReviewer.Application.Common.Dtos;
+using ProductReviewer.Application.Common.Helper;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Domain.Entities;
 using ProductReviewer.Domain.Enums;
@@ -59,9 +60,10 @@ namespace ProductReviewer.Infrastructure.Services
             return Result.Ok("Added Product successfully.");
         }
 
-        public async Task<Result<List<ProductDto>>> GetAllAsync(ProductCategory? category = null)
+        public async Task<Result<PaginatedList<ProductDto>>> GetAllAsync(int pageNo, int pageSize, ProductCategory? category = null)
         {
             var query = _ctx.Products
+                .AsNoTracking()
                 .Select(p => new ProductDto
                 {
                     Id = p.Id,
@@ -81,7 +83,13 @@ namespace ProductReviewer.Infrastructure.Services
                 query = query.Where(p => p.Category == category.Value);
             }
 
-            return Result.Ok(await query.ToListAsync());
+            var paginatedResult = await PaginatedList<ProductDto>.CreateAsync(
+                query.OrderBy(p => p.Id), 
+                pageNo,
+                pageSize
+            );
+
+            return Result.Ok(paginatedResult);
         }
     }
 }
