@@ -20,6 +20,14 @@ namespace ProductReviewer.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("id")]
+        public async Task<IActionResult> GetProductById([FromQuery] GetProductByIdQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return result.ToActionResult();
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateProduct(CreateProductCommand command)
         {

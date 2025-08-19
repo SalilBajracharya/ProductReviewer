@@ -91,5 +91,29 @@ namespace ProductReviewer.Infrastructure.Services
 
             return Result.Ok(paginatedResult);
         }
+
+        public async Task<Result<ProductDto>> GetById(int id)
+        {
+            var product = await _ctx.Products
+                .AsNoTracking()
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    SKU = p.SKU,
+                    ProductType = p.ProductType,
+                    AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0.0,
+                    Category =
+                        p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 4.0 ? ProductCategory.Good :
+                        p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 2.0 ? ProductCategory.Bad :
+                        ProductCategory.Worst
+                }).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (product is null)
+                return Result.Fail("Product not found.");
+
+            return Result.Ok(product);
+        }
     }
 }

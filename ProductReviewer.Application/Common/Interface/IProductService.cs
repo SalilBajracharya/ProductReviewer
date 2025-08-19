@@ -9,6 +9,7 @@ namespace ProductReviewer.Application.Common.Interface
     public interface IProductService
     {
         Task<Result<string>> CreateProduct(CreateProductDto product);
+        Task<Result<ProductDto>> GetById(int id);
         Task<Result<PaginatedList<ProductDto>>> GetAllAsync(int pageNo, int pageSize, ProductCategory? category = null);
         Task<Result<bool>> CheckUserReviewExists(int productId);
         Task<Result<string>> AddProductReview(ReviewProductDto reviewProductDto);

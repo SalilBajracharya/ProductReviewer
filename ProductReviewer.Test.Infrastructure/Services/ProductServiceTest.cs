@@ -102,6 +102,60 @@ namespace ProductReviewer.Test.Infrastructure.Services
 
         [Trait("Category", "Infrastructure")]
         [Fact]
+        public async Task GetByid_ReturnsProduct_WhenValidId()
+        {
+            var product = new Product
+            {
+                Name = "Test Product",
+                Description = "Test Description",
+                SKU = "TEST-SKU",
+                ProductType = "Electronics",
+                Reviews = new List<Review>
+                {
+                    new Review { Rating = 4.3, Comment = "Great product", UserId = _currentUser.Object.UserId! }
+                }
+            };
+
+            _dbContext.Products.Add(product);
+
+            await _dbContext.SaveChangesAsync();
+            var result = await _productService.GetById(product.Id);
+
+            result.IsSuccess.Should().BeTrue();
+            result.Value.Should().NotBeNull();
+            result.Value.Name.Should().Be("Test Product");
+            result.Value.AverageRating.Should().Be(4.3);
+        }
+
+        [Trait("Category", "Infrastructure")]
+        [Fact]
+        public async Task GetByid_ReturnsFailure_WhenInvalidId()
+        {
+            var product = new Product
+            {
+                Name = "Test Product",
+                Description = "Test Description",
+                SKU = "TEST-SKU",
+                ProductType = "Electronics",
+                Reviews = new List<Review>
+                {
+                    new Review { Rating = 4.3, Comment = "Great product", UserId = _currentUser.Object.UserId! }
+                }
+            };
+
+            _dbContext.Products.Add(product);
+
+            await _dbContext.SaveChangesAsync();
+            var result = await _productService.GetById(product.Id + 1);
+
+            result.IsSuccess.Should().BeFalse();
+            result.Errors.Should().ContainSingle();
+            result.Errors[0].Message.Should().Be("Product not found.");
+        }
+
+
+        [Trait("Category", "Infrastructure")]
+        [Fact]
         public async Task GetAllAsync_ReturnsWorstCategory_WhenWorstReviews()
         {
             _dbContext.Products.Add(new Product

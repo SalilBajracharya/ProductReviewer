@@ -8,12 +8,12 @@ using ProductReviewer.Domain.Enums;
 
 namespace ProductReviewer.Test.Application.Segregation.Product.Queries
 {
-    public class GetAllProductQuery
+    public class GetAllProductQueryTest
     {
         private readonly Mock<IProductService> _productService;
         private readonly GetAllProductQueryHandler _handler;
 
-        public GetAllProductQuery()
+        public GetAllProductQueryTest()
         {
             _productService = new Mock<IProductService>();
             _handler = new GetAllProductQueryHandler(_productService.Object);
