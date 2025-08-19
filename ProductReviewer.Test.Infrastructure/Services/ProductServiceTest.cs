@@ -332,6 +332,7 @@ namespace ProductReviewer.Test.Infrastructure.Services
             result.Value.Items.Should().HaveCount(3);
         }
 
+        [Fact]
         public void Dispose()
         {
             _dbContext.Database.EnsureDeleted();

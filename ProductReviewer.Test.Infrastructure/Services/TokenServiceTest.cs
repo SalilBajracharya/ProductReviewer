@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using ProductReviewer.Infrastructure.Data.Identity;
 using ProductReviewer.Infrastructure.Services;
@@ -24,8 +26,20 @@ namespace ProductReviewer.Test.Infrastructure.Services
             mockConfig.Setup(c => c["Jwt:Audience"]).Returns("test_audience");
 
             var mockUserStore = new Mock<IUserStore<ApplicationUser>>();
+            //var userManagerMock = new Mock<UserManager<ApplicationUser>>(
+            //    mockUserStore.Object, null, null, null, null, null, null, null, null);
+
             var userManagerMock = new Mock<UserManager<ApplicationUser>>(
-                mockUserStore.Object, null, null, null, null, null, null, null, null);
+                            mockUserStore.Object,
+                            Mock.Of<IOptions<IdentityOptions>>(),
+                            Mock.Of<IPasswordHasher<ApplicationUser>>(),
+                            new IUserValidator<ApplicationUser>[0],
+                            new IPasswordValidator<ApplicationUser>[0],
+                            Mock.Of<ILookupNormalizer>(),
+                            new IdentityErrorDescriber(),
+                            Mock.Of<IServiceProvider>(),
+                            Mock.Of<ILogger<UserManager<ApplicationUser>>>()
+                        );
 
             var testUser = new ApplicationUser { Id = userid, UserName = userName };
 

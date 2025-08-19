@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using ProductReviewer.Application.Common.Interface;
 using ProductReviewer.Application.Segregation.Products.Queries;
 using ProductReviewer.Infrastructure.Data;

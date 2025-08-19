@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -22,7 +23,18 @@ namespace ProductReviewer.Test.Infrastructure.Services
         public AuthServiceTest()
         {
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
-            _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            //_userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            _userManagerMock = new Mock<UserManager<ApplicationUser>>(
+                            userStoreMock.Object,
+                            Mock.Of<IOptions<IdentityOptions>>(),
+                            Mock.Of<IPasswordHasher<ApplicationUser>>(),
+                            new IUserValidator<ApplicationUser>[0],
+                            new IPasswordValidator<ApplicationUser>[0],
+                            Mock.Of<ILookupNormalizer>(),
+                            new IdentityErrorDescriber(),
+                            Mock.Of<IServiceProvider>(),
+                            Mock.Of<ILogger<UserManager<ApplicationUser>>>()
+                        );
 
             var contextAccessorMock = new Mock<IHttpContextAccessor>();
 
@@ -43,9 +55,17 @@ namespace ProductReviewer.Test.Infrastructure.Services
                         )
             { CallBase = true };
             var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
-            _roleManagerMock = new Mock<RoleManager<IdentityRole>>(roleStoreMock.Object, null, null, null, null);
+            //_roleManagerMock = new Mock<RoleManager<IdentityRole>>(roleStoreMock.Object, null, null, null, null);
 
-            _tokenServiceMock = new Mock<ITokenService>();
+            _roleManagerMock = new Mock<RoleManager<IdentityRole>>(
+                               roleStoreMock.Object,
+                               new IRoleValidator<IdentityRole>[0],
+                               Mock.Of<ILookupNormalizer>(),
+                               new IdentityErrorDescriber(),
+                               Mock.Of<ILogger<RoleManager<IdentityRole>>>());
+
+
+           _tokenServiceMock = new Mock<ITokenService>();
 
             _authService = new AuthService(
                 _userManagerMock.Object,
@@ -86,7 +106,7 @@ namespace ProductReviewer.Test.Infrastructure.Services
             string user = "nonexistentuser";
             string password = "Strong@123";
 
-            _userManagerMock.Setup(x => x.FindByNameAsync(user)).ReturnsAsync((ApplicationUser)null);
+            _userManagerMock.Setup(x => x.FindByNameAsync(user)).ReturnsAsync((ApplicationUser?)null);
 
             var result = await _authService.LoginValidate(user, password);
 
