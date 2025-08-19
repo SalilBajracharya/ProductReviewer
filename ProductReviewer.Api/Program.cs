@@ -9,6 +9,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.AddFileLogger();
+
 builder.Services.AddControllers()
     .AddJsonOptions(opt => {
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
