@@ -71,6 +71,7 @@ namespace ProductReviewer.Infrastructure.Services
                     Description = p.Description,
                     SKU = p.SKU,
                     ProductType = p.ProductType,
+                    TotalReviews = p.Reviews.Count(),
                     AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0.0,
                     Category =
                         p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 4.0 ? ProductCategory.Good :
@@ -103,6 +104,7 @@ namespace ProductReviewer.Infrastructure.Services
                     Description = p.Description,
                     SKU = p.SKU,
                     ProductType = p.ProductType,
+                    TotalReviews = p.Reviews.Count(),
                     AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0.0,
                     Category =
                         p.Reviews.Any() && p.Reviews.Average(r => r.Rating) >= 4.0 ? ProductCategory.Good :

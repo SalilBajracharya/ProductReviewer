@@ -12,9 +12,9 @@ namespace ProductReviewer.Application.Segregation.Products.Commands
         [Required]
         public string Name { get; set; } = string.Empty;
         [Required]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         public string SKU { get; set; } = string.Empty;
-        public string ProductType { get; set; } = string.Empty;
+        public string? ProductType { get; set; } = string.Empty;
     }
 
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<string>>

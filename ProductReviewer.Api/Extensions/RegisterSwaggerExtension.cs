@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace ProductReviewer.Api.Extensions
 {
@@ -8,6 +9,9 @@ namespace ProductReviewer.Api.Extensions
         {
             services.AddSwaggerGen(c =>
             {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
+
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Product Reviewer API",
