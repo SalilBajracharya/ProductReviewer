@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using ProductReviewer.Domain.Constants;
 using ProductReviewer.Domain.Entities;
@@ -15,7 +17,7 @@ namespace ProductReviewer.Test.Infrastructure.Data
         private readonly Mock<RoleManager<IdentityRole>> _roleManager;
 
         public DbInitializerTest()
-        { 
+        {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
@@ -23,18 +25,37 @@ namespace ProductReviewer.Test.Infrastructure.Data
             _dbContext = new ApplicationDbContext(options);
 
             var userStore = new Mock<IUserStore<ApplicationUser>>();
+            //_userManager = new Mock<UserManager<ApplicationUser>>(
+            //    userStore.Object, null, null, null, null, null, null, null, null);
             _userManager = new Mock<UserManager<ApplicationUser>>(
-                userStore.Object, null, null, null, null, null, null, null, null);
+                            userStore.Object,
+                            Mock.Of<IOptions<IdentityOptions>>(),
+                            Mock.Of<IPasswordHasher<ApplicationUser>>(),
+                            new IUserValidator<ApplicationUser>[0],
+                            new IPasswordValidator<ApplicationUser>[0],
+                            Mock.Of<ILookupNormalizer>(),
+                            new IdentityErrorDescriber(),
+                            Mock.Of<IServiceProvider>(),
+                            Mock.Of<ILogger<UserManager<ApplicationUser>>>()
+                        );
 
             var roleStore = new Mock<IRoleStore<IdentityRole>>();
+            //_roleManager = new Mock<RoleManager<IdentityRole>>(
+            //    roleStore.Object, null, null, null, null);
+
             _roleManager = new Mock<RoleManager<IdentityRole>>(
-                roleStore.Object, null, null, null, null);
+                                roleStore.Object,
+                                new IRoleValidator<IdentityRole>[0],
+                                Mock.Of<ILookupNormalizer>(),
+                                new IdentityErrorDescriber(),
+                                Mock.Of<ILogger<RoleManager<IdentityRole>>>()
+);
         }
 
         [Trait("Category", "Infrastructure")]
         [Fact]
         public async Task SeedAsync_AddsDefaultProduct_WhenDBEmpty()
-        { 
+        {
             await DbInitializer.SeedAsync(_dbContext, _userManager.Object, _roleManager.Object);
             var product = _dbContext.Products.ToList();
 
@@ -76,7 +97,7 @@ namespace ProductReviewer.Test.Infrastructure.Data
         [Fact]
         public async Task SeedAsync_SkipsRoleCreation_WhenRolesEmpty()
         {
-            _roleManager.Setup(r => r.Roles).Returns(new List<IdentityRole> { new IdentityRole(UserRoles.Admin)}.AsQueryable());
+            _roleManager.Setup(r => r.Roles).Returns(new List<IdentityRole> { new IdentityRole(UserRoles.Admin) }.AsQueryable());
             _roleManager.Setup(r => r.RoleExistsAsync(It.IsAny<string>()))
                 .ReturnsAsync(true);
 
@@ -91,14 +112,14 @@ namespace ProductReviewer.Test.Infrastructure.Data
         {
             _userManager.Setup(u => u.Users).Returns(new List<ApplicationUser>().AsQueryable());
             _userManager.Setup(u => u.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success);  
+                .ReturnsAsync(IdentityResult.Success);
             _roleManager.Setup(r => r.RoleExistsAsync(UserRoles.Admin)).ReturnsAsync(true);
             _userManager.Setup(u => u.AddToRoleAsync(It.IsAny<ApplicationUser>(), UserRoles.Admin))
                 .ReturnsAsync(IdentityResult.Success);
 
             await DbInitializer.SeedAsync(_dbContext, _userManager.Object, _roleManager.Object);
 
-            _userManager.Verify(u => u.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);   
+            _userManager.Verify(u => u.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
             _userManager.Verify(u => u.AddToRoleAsync(It.IsAny<ApplicationUser>(), UserRoles.Admin), Times.Once);
         }
 
@@ -106,7 +127,7 @@ namespace ProductReviewer.Test.Infrastructure.Data
         [Fact]
         public async Task SeedAsync_SkipUserCreation_WhenUserExists()
         {
-            _userManager.Setup(u => u.Users).Returns(new List<ApplicationUser> { new ApplicationUser()}.AsQueryable());
+            _userManager.Setup(u => u.Users).Returns(new List<ApplicationUser> { new ApplicationUser() }.AsQueryable());
 
             await DbInitializer.SeedAsync(_dbContext, _userManager.Object, _roleManager.Object);
 

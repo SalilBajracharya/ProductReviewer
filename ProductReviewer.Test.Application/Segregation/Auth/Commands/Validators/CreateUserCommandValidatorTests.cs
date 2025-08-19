@@ -65,6 +65,7 @@ namespace ProductReviewer.Test.Application.Segregation.Auth.Commands.Validators
                 .WithErrorMessage(expectedMessage);
         }
 
+        [Fact]
         public void ShouldSucceed_WhenValid()
         {
             var command = CreateUser("Test User1", "Strong@123", "test@gmail.com", "Hello World User");
